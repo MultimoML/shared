@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  portainer:
+    image: docker.io/portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - 9443:9443 # In case traefik crashes, so we can debug
+    networks:
+      - traefik-proxy
+    volumes:
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      - /etc/multimo/shared/portainer/data:/data:rw
+    labels:
+      traefik.enable: true
+      traefik.http.routers.portainer.rule: Host(`portainer.${DOMAIN}`)"
+      traefik.http.routers.portainer.entrypoints: https
+      traefik.http.services.portainer.loadbalancer.server.port: 9000
+
+networks:
+  traefik-proxy:
+    external: true

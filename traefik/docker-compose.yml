@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  traefik:
+    image: docker.io/traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - traefik-proxy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - DESEC_TOKEN=${DESEC_TOKEN} # https://doc.traefik.io/traefik/https/acme/#providers
+    volumes:
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      - /etc/multimo/shared/traefik/traefik.yml:/traefik.yml:ro
+      - /etc/multimo/shared/traefik/config.yml:/config.yml:ro
+      - traefik-leresolver:/leresolver:rw
+    labels:
+      traefik.enable: true
+
+      # traefik dashboard 
+      traefik.http.routers.traefik-dashboard.rule: Host(`traefik.${DOMAIN}`)
+      traefik.http.routers.traefik-dashboard.middlewares: traefik-auth
+      traefik.http.routers.traefik-dashboard.service: api@internal
+
+      traefik.http.middlewares.traefik-auth.basicauth.users: ${BASIC_AUTH}
+      
+      
+      # general
+      traefik.http.routers.traefik.entrypoints: https
+      
+      traefik.http.routers.traefik.tls: true
+      traefik.http.routers.traefik.tls.certresolver: leresolver
+      traefik.http.routers.traefik.tls.domains[0].main: ${DOMAIN}
+      traefik.http.routers.traefik.tls.domains[0].sans: "*.{DOMAIN}"
+      traefik.http.routers.traefik.service: api@internal
+
+networks:
+  traefik-proxy:
+    external: true
+
+volumes:
+  traefik-leresolver:
