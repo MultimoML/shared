@@ -6,7 +6,9 @@ services:
     container_name: traefik
     restart: unless-stopped
     command:
-      - --certificatesresolvers.leresolver.acme.email=${EMAIL} 
+      - --certificatesresolvers.leresolver.acme.email=${EMAIL}
+      - --http.routers.traefik.tls.domains[0].main=${DOMAIN}
+      - --http.routers.traefik.tls.domains[0].sans="*.${DOMAIN}"
     networks:
       - traefik-proxy
     ports:
@@ -22,23 +24,12 @@ services:
       - traefik-leresolver:/leresolver:rw
     labels:
       traefik.enable: true
-
-      # traefik dashboard 
+      traefik.http.routers.traefik-dashboard.entrypoints: https
       traefik.http.routers.traefik-dashboard.rule: Host(`traefik.${DOMAIN}`)
-      traefik.http.routers.traefik-dashboard.middlewares: traefik-auth
       traefik.http.routers.traefik-dashboard.service: api@internal
 
+      traefik.http.routers.traefik-dashboard.middlewares: traefik-auth
       traefik.http.middlewares.traefik-auth.basicauth.users: ${BASIC_AUTH}
-      
-      
-      # general
-      traefik.http.routers.traefik.entrypoints: https
-      
-      traefik.http.routers.traefik.tls: true
-      traefik.http.routers.traefik.tls.certresolver: leresolver
-      traefik.http.routers.traefik.tls.domains[0].main: ${DOMAIN}
-      traefik.http.routers.traefik.tls.domains[0].sans: "*.${DOMAIN}"
-      traefik.http.routers.traefik.service: api@internal
 
 networks:
   traefik-proxy:

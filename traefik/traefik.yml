@@ -16,6 +16,18 @@ entryPoints:
           scheme: https
   https:
     address: ":443"
+    http:
+      tls:
+        certResolver: leresolver
+
+http:
+  routers:
+    traefik:
+      entrypoints: https
+      tls: 
+      # domains: as ENV
+      tls.certresolver: leresolver
+      service: api@internal
 
 serversTransport:
   insecureSkipVerify: true
@@ -36,3 +48,4 @@ certificatesResolvers:
         resolvers:
           - "1.1.1.1:53"
           - "1.0.0.1:53"
+        delayBeforeCheck: 10
