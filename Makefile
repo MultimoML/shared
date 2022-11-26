@@ -3,7 +3,7 @@
 .PHONY: traefik portainer
 
 traefik:
-	sudo podman-compose up -d -f ./traefik/docker-compose.yml --env-file .env --force-recreate
+	sudo docker-compose -f traefik/docker-compose.yml --env-file .env up -d
 
 portainer:
-	sudo podman-compose up -d -f ./portainer/docker-compose.yml --env-file .env --force-recreate
+	sudo docker-compose -f portainer/docker-compose.yml --env-file .env up -d

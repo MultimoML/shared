@@ -5,6 +5,8 @@ services:
     image: docker.io/traefik:latest
     container_name: traefik
     restart: unless-stopped
+    command:
+      - --certificatesresolvers.leresolver.acme.email=${EMAIL} 
     networks:
       - traefik-proxy
     ports:
@@ -12,8 +14,9 @@ services:
       - 443:443
     environment:
       - DESEC_TOKEN=${DESEC_TOKEN} # https://doc.traefik.io/traefik/https/acme/#providers
+      - EMAIL=${EMAIL}
     volumes:
-      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/multimo/shared/traefik/traefik.yml:/traefik.yml:ro
       - /etc/multimo/shared/traefik/config.yml:/config.yml:ro
       - traefik-leresolver:/leresolver:rw
@@ -34,7 +37,7 @@ services:
       traefik.http.routers.traefik.tls: true
       traefik.http.routers.traefik.tls.certresolver: leresolver
       traefik.http.routers.traefik.tls.domains[0].main: ${DOMAIN}
-      traefik.http.routers.traefik.tls.domains[0].sans: "*.{DOMAIN}"
+      traefik.http.routers.traefik.tls.domains[0].sans: "*.${DOMAIN}"
       traefik.http.routers.traefik.service: api@internal
 
 networks:

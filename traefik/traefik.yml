@@ -29,7 +29,7 @@ providers:
 certificatesResolvers:
   leresolver:
     acme:
-      email: ${EMAIL}
+      # email: as ENV 
       storage: /leresolver/acme.json
       dnsChallenge:
         provider: desec # https://go-acme.github.io/lego/dns/desec/
