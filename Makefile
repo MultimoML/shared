@@ -13,5 +13,4 @@ datadog:
 
 etcd:
 		protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative etcd/main.proto
-		cd etcd; go build .
-		mv etcd/etcd .
+		cd etcd; swag init; go mod tidy; go build
