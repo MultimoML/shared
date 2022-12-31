@@ -18,7 +18,7 @@ entryPoints:
     address: ":443"
     http:
       tls:
-        certResolver: leresolver
+        certResolver: multimo_dedyn_io
 
 http:
   routers:
@@ -26,7 +26,7 @@ http:
       entrypoints: https
       tls: 
       # domains: as ENV
-      tls.certresolver: leresolver
+      tls.certresolver: multimo_dedyn_io
       service: api@internal
 
 serversTransport:
@@ -39,10 +39,20 @@ providers:
     filename: /config.yml
 
 certificatesResolvers:
-  leresolver:
+  multimo_ml:
     acme:
       # email: as ENV 
-      storage: /leresolver/acme.json
+      storage: /resolver/acme_multimo_ml.json
+      dnsChallenge:
+        provider: desec # https://go-acme.github.io/lego/dns/desec/
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
+        delayBeforeCheck: 10
+  multimo_dedyn_io:
+    acme:
+      # email: as ENV
+      storage: /resolver/acme_multimo_dedyn_io.json
       dnsChallenge:
         provider: desec # https://go-acme.github.io/lego/dns/desec/
         resolvers:

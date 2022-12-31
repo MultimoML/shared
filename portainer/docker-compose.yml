@@ -14,7 +14,7 @@ services:
       - /etc/multimo/shared/portainer/data:/data:rw
     labels:
       traefik.enable: true
-      traefik.http.routers.portainer.rule: Host(`portainer.${DOMAIN}`)
+      traefik.http.routers.portainer.rule: Host(`portainer.${DOMAIN_IO}`)
       traefik.http.routers.portainer.entrypoints: https
       traefik.http.services.portainer.loadbalancer.server.port: 9000
 
