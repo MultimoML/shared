@@ -97,5 +97,5 @@ var Config_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "etcd/main.proto",
+	Metadata: "main.proto",
 }

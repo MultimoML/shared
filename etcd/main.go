@@ -60,7 +60,6 @@ func GetConfigs() (string, error) {
 // @title Configuration store
 // @version 1.0.0
 // @host localhost:8080
-// @BasePath /
 func main() {
 	go func() {
 		lis, err := net.Listen("tcp", ":9090")
@@ -76,71 +75,80 @@ func main() {
 
 	router := gin.Default()
 
+	router.GET("/:id", Config)
+	router.GET("/", Configs)
+	router.GET("/live", Liveness)
+	router.GET("/ready", Readiness)
+
 	// Redirect /openapi to /openapi/index.html
 	router.GET("/openapi", func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/products/openapi/index.html")
+		c.Redirect(http.StatusMovedPermanently, "/openapi/index.html")
 	})
 	router.GET("/openapi/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// @Summary Get a config
-	// @Description Get a config
-	// @Success 200 {string} string
-	// @Failure 404 {string} string
-	// @Failure 500 {string} string
-	// @Router /{id} [get]
-	router.GET("/:id", func(c *gin.Context) {
-		key := c.Param("id")
-
-		// If key is not in the list of configs, return a 404
-		configs, err := GetConfigs()
-		if err != nil {
-			c.String(http.StatusInternalServerError, err.Error())
-			return
-		}
-		if !strings.Contains(configs, key) {
-			c.String(http.StatusNotFound, "Config not found")
-			return
-		}
-
-		value, err := GetConfig(key)
-		if err != nil {
-			c.String(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		c.String(http.StatusOK, value)
-	})
-
-	// @Summary Get all configs
-	// @Description Get all configs
-	// @Success 200 {string} string
-	// @Failure 500 {string} string
-	// @Router / [get]
-	router.GET("/", func(c *gin.Context) {
-		configs, err := GetConfigs()
-		if err != nil {
-			c.String(http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		c.String(http.StatusOK, configs)
-	})
-
-	// @Summary Get liveness status of the microservice
-	// @Description Get liveness status of the microservice
-	// @Success 200 {string} string
-	// @Router /live [get]
-	router.GET("/live", func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
-	})
-
-	// @Summary Get readiness status of the microservice
-	// @Description Get readiness status of the microservice
-	// @Success 200 {string} string
-	// @Router /ready [get]
-	router.GET("/ready", func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
-	})
-
 	log.Fatal(router.Run(":8080"))
+}
+
+// Liveness returns a 200 if the microservice is live
+// @Summary Get liveness status of the microservice
+// @Description Get liveness status of the microservice
+// @Success 200 {string} string
+// @Router /live [get]
+func Liveness(c *gin.Context) {
+	c.String(http.StatusOK, "OK")
+}
+
+// Readiness returns a 200 if the microservice is ready
+// @Summary Get readiness status of the microservice
+// @Description Get readiness status of the microservice
+// @Success 200 {string} string
+// @Router /ready [get]
+func Readiness(c *gin.Context) {
+	c.String(http.StatusOK, "OK")
+}
+
+// Config returns a config
+// @Summary Get a config
+// @Description Get a config
+// @Success 200 {string} string
+// @Failure 404 {string} string
+// @Failure 500 {string} string
+// @Router /{id} [get]
+func Config(c *gin.Context) {
+	key := c.Param("id")
+
+	// If key is not in the list of configs, return a 404
+	configs, err := GetConfigs()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if !strings.Contains(configs, key) {
+		c.String(http.StatusNotFound, "Config not found")
+		return
+	}
+
+	value, err := GetConfig(key)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.String(http.StatusOK, value)
+}
+
+// Configs returns a list of configs
+// @Summary Get all configs
+// @Description Get all configs
+// @Success 200 {string} string
+// @Failure 500 {string} string
+// @Router / [get]
+func Configs(c *gin.Context) {
+	configs, err := GetConfigs()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.String(http.StatusOK, configs)
 }
