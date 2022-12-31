@@ -33,7 +33,7 @@ func (s *configServer) GetConfig(_ context.Context, req *ConfigRequest) (*Config
 }
 
 func GetConfig(key string) (string, error) {
-	value, err := os.ReadFile(key)
+	value, err := os.ReadFile("configs/" + key)
 	if err != nil {
 		return "", err
 	}
@@ -60,7 +60,7 @@ func GetConfigs() (string, error) {
 // @title Configuration store
 // @version 1.0.0
 // @host localhost:8080
-// @BasePath /configs
+// @BasePath /
 func main() {
 	go func() {
 		lis, err := net.Listen("tcp", ":9090")
@@ -76,23 +76,19 @@ func main() {
 
 	router := gin.Default()
 
-	// Redirect /products and /products/openapi to /products/openapi/index.html
-	router.GET("/products", func(c *gin.Context) {
+	// Redirect /openapi to /openapi/index.html
+	router.GET("/openapi", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/products/openapi/index.html")
 	})
-	router.GET("/products/openapi", func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/products/openapi/index.html")
-	})
-
-	router.GET("/products/openapi/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/openapi/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// @Summary Get a config
 	// @Description Get a config
 	// @Success 200 {string} string
 	// @Failure 404 {string} string
 	// @Failure 500 {string} string
-	// @Router /configs [get]
-	router.GET("/configs/:id", func(c *gin.Context) {
+	// @Router /{id} [get]
+	router.GET("/:id", func(c *gin.Context) {
 		key := c.Param("id")
 
 		// If key is not in the list of configs, return a 404
@@ -119,8 +115,8 @@ func main() {
 	// @Description Get all configs
 	// @Success 200 {string} string
 	// @Failure 500 {string} string
-	// @Router /configs [get]
-	router.GET("/configs", func(c *gin.Context) {
+	// @Router / [get]
+	router.GET("/", func(c *gin.Context) {
 		configs, err := GetConfigs()
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error())
