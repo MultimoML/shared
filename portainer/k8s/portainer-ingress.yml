@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: portainer
+  namespace: traefik
+
+spec:
+  entryPoints:
+    - websecure
+
+  routes:
+    - match: Host(`portainer.multimo.ml`)
+      kind: Rule
+      services:
+        - name: portainer
+          port: 9000
