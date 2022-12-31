@@ -2,6 +2,16 @@
 
 Shared services or configs
 
+## Services
+
+Traefik UI URL:
+- server: https://traefik.multimo.dedyn.io
+- k8s: https://traefik.multimo.ml
+
+Portainer URL:
+- server: https://portainer.multimo.dedyn.io
+- k8s: https://portainer.multimo.ml
+
 # Notes
 
 To access Portainer without Traefik port forward `9443` to your machine.
