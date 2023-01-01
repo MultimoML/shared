@@ -3,6 +3,8 @@ datadog:
   logs:
     enabled: true
     containerCollectAll: true
+  apm:
+    portEnabled: true
 
 clusterAgent:
   enabled: true
