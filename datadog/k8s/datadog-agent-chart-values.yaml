@@ -1,0 +1,21 @@
+datadog:
+  collectEvents: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+
+clusterAgent:
+  enabled: true
+  replicas: 2
+  createPodDisruptionBudget: true
+  rbac:
+    create: true
+
+env:
+  - name: DD_API_KEY
+    valueFrom:
+      secretKeyRef:
+        key: dd_api_key
+        name: datadog-credentials
+  - name: DD_SITE
+    value: datadoghq.eu

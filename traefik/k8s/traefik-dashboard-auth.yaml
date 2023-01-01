@@ -3,17 +3,17 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: traefik-dashboard-auth
-  namespace: traefik
+  namespace: default
 
 data:
-  users: a2FuZ29yb286JGFwcjEkdGlQbFBINXYkYlJrUHBSUlYuYUxUWnhFRzdYbmduMAoK
+  users: admin:$apr1$of6a97r1$SIoscaIwzUkVlFjkBjill1
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-dashboard-basicauth
-  namespace: traefik
+  namespace: default
 
 spec:
   basicAuth:

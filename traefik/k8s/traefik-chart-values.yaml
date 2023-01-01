@@ -1,34 +1,61 @@
 ---
-additionalArguments:
-  - --entrypoints.websecure.http.tls.certresolver=cloudflare
-  - --entrypoints.websecure.http.tls.domains[0].main=example.com
-  - --entrypoints.websecure.http.tls.domains[0].sans=*.example.com
-  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
-  - --certificatesresolvers.cloudflare.acme.email=mail@example.com
-  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
-  - --certificatesresolvers.cloudflare.acme.storage=/certs/acme.json
+#additionalArguments:
+#  - --entrypoints.websecure.http.tls.certresolver=cloudflare
+#  - --entrypoints.websecure.http.tls.domains[0].main=example.com
+#  - --entrypoints.websecure.http.tls.domains[0].sans=*.example.com
+#  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+#  - --certificatesresolvers.cloudflare.acme.email=mail@example.com
+#  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
+#  - --certificatesresolvers.cloudflare.acme.storage=/certs/acme.json
 
 ports:
   web:
     redirectTo: websecure
+  websecure:
+    tls:
+      certResolver: multimo_ml
+      domains:
+      - main: multimo.ml
+        sans: 
+        - "*.multimo.ml"
+
+certResolvers:
+  multimo_ml:
+    email: mk2376@student.uni-lj.si
+    dnsChallenge:
+      provider: desec # https://go-acme.github.io/lego/dns/desec/
+      delayBeforeCheck: 30
+      resolvers:
+        - 1.1.1.1
+        - 1.0.0.1
+    storage: /certs/acme_multimo_ml.json
 
 env:
-  - name: CF_API_EMAIL
+  - name: EMAIL
     valueFrom:
       secretKeyRef:
         key: email
-        name: cloudflare-api-credentials
-  - name: CF_API_KEY
+        name: acme-credentials
+  - name: DESEC_TOKEN
     valueFrom:
       secretKeyRef:
-        key: apiKey
-        name: cloudflare-api-credentials
+        key: desec_token
+        name: acme-credentials
 
 ingressRoute:
   dashboard:
     enabled: false
 
+logs:
+  general:
+    # Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+    level: WARN
+
 persistence:
   enabled: true
   path: /certs
   size: 128Mi
+
+providers:
+  kubernetescrd:
+    allowCrossNamespace: true 

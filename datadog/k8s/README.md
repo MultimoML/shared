@@ -6,6 +6,7 @@ helm repo update
 ```
 
 ```
-helm install datadog -f datadog-agent-chart-values.yaml  --set datadog.apiKey=<DATADOG_API_KEY> datadog/datadog
-```
+kubectl apply -f datadog-secrets.yaml
 
+helm install datadog datadog/datadog -f datadog-agent-chart-values.yaml
+```

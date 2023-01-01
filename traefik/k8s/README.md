@@ -6,13 +6,25 @@ helm repo update
 ```
 
 ```
-kubectl create namespace traefik
+kubectl cluster-info --kubeconfig=/etc/multimo/prod-kubeconfig.yaml
+
+chmod 700 /etc/multimo/prod-kubeconfig.yaml
+export KUBECONFIG=/etc/multimo/prod-kubeconfig.yaml
 ```
 
 ```
-kubectl apply -f traefik-config.yaml
+kubectl apply -f traefik-secrets.yaml
 ```
 
 ```
-helm install traefik traefik/traefik --namespace=traefik --values=traefik-chart-values.yaml --set providers.kubernetescrd.allowCrossNamespace=true 
+helm install traefik traefik/traefik --values=traefik-chart-values.yaml
+
+helm upgrade traefik traefik/traefik --values=traefik-chart-values.yaml
 ```
+
+```
+helm uninstall traefik
+```
+
+Made with https://traefik.io/blog/install-and-configure-traefik-with-helm/ and
+https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml.
