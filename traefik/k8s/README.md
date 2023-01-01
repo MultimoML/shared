@@ -23,6 +23,11 @@ helm upgrade traefik traefik/traefik --values=traefik-chart-values.yaml
 ```
 
 ```
+kubectl apply -f traefik-dashboard-auth.yaml
+kubectl apply -f traefik-dashboard-ingressroute.yaml
+```
+
+```
 helm uninstall traefik
 ```
 

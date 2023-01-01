@@ -5,19 +5,16 @@ datadog:
     containerCollectAll: true
   apm:
     portEnabled: true
+  
+  apiKeyExistingSecret: datadog-credentials
+  appKeyExistingSecret: datadog-credentials
+  site: datadoghq.eu
 
 clusterAgent:
   enabled: true
   replicas: 2
   createPodDisruptionBudget: true
+  metricsProvider:
+    enabled: true
   rbac:
     create: true
-
-env:
-  - name: DD_API_KEY
-    valueFrom:
-      secretKeyRef:
-        key: dd_api_key
-        name: datadog-credentials
-  - name: DD_SITE
-    value: datadoghq.eu

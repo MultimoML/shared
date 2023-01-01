@@ -6,7 +6,7 @@ metadata:
   namespace: default
 
 data:
-  users: admin:$apr1$of6a97r1$SIoscaIwzUkVlFjkBjill1
+  users: YWRtaW46JGFwcjEkdTE1YjQ4bHIkdUlJR2tKWi92QVMucmlJT2dEOGlYMQ== # htpasswd -> base64
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
