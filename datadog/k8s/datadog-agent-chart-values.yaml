@@ -14,7 +14,7 @@ clusterAgent:
   enabled: true
   replicas: 2
   createPodDisruptionBudget: true
-  metricsProvider:
-    enabled: true
+  #metricsProvider:
+  # enabled: true
   rbac:
     create: true
