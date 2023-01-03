@@ -62,7 +62,7 @@ func GetConfigs() (string, error) {
 // @host localhost:8080
 func main() {
 	go func() {
-		lis, err := net.Listen("tcp", ":9090")
+		lis, err := net.Listen("tcp", ":30001")
 		if err != nil {
 			panic(err)
 		}
@@ -86,7 +86,7 @@ func main() {
 	})
 	router.GET("/openapi/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	log.Fatal(router.Run(":8080"))
+	log.Fatal(router.Run(":30000"))
 }
 
 // Liveness returns a 200 if the microservice is live
