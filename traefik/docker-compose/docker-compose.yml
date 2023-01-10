@@ -8,9 +8,9 @@ services:
     command:
       - --certificatesresolvers.multimo_ml.acme.email=${EMAIL}
       - --certificatesresolvers.multimo_dedyn_io.acme.email=${EMAIL}
-      - --http.routers.traefik.tls.domains[0].main=${DOMAIN_IO}
-      - --http.routers.traefik.tls.domains[0].sans="*.${DOMAIN_IO}"
-      - --http.routers.traefik.tls.domains[1].main=${DOMAIN_ML}
+      - --http.routers.traefik.tls.domains[0].main=${DOMAIN_ML}
+      - --http.routers.traefik.tls.domains[0].sans="*.${DOMAIN_ML}"
+      - --http.routers.traefik.tls.domains[1].main=${DOMAIN_IO}
     networks:
       - traefik-proxy
     ports:
@@ -21,12 +21,12 @@ services:
       - EMAIL=${EMAIL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/multimo/shared/traefik/traefik.yml:/traefik.yml:ro
+      - /etc/multimo/shared/traefik/docker-compose/traefik.yml:/traefik.yml:ro
       - traefik-resolver:/resolver:rw
     labels:
       traefik.enable: true
       traefik.http.routers.traefik-dashboard.entrypoints: https
-      traefik.http.routers.traefik-dashboard.rule: Host(`traefik.${DOMAIN_IO}`)
+      traefik.http.routers.traefik-dashboard.rule: Host(`traefik.${DOMAIN_ML}`)
       traefik.http.routers.traefik-dashboard.service: api@internal
 
       traefik.http.routers.traefik-dashboard.middlewares: traefik-auth
